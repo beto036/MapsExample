@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">MapsExcercise</string>
+    <string name="title_activity_maps">Map</string>
+    <string name="from_latitude">From Latitude</string>
+    <string name="from_longitude">From Longitude</string>
+    <string name="to_latitude">To Latitude</string>
+    <string name="to_longitude">To Longitude</string>
+    <string name="speed">Speed</string>
+    <string name="start">Start</string>
+</resources>
