@@ -1,6 +1,12 @@
 package com.example.admin.mapsexcercise.showroute.view;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -16,13 +22,13 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 
-import java.util.List;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, MapsView {
 
@@ -42,7 +48,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private String toLongitudeVal;
     private String speedVal;
 
-    PolylineOptions polylineOptions;
+    private PolylineOptions polylineOptions;
+    private CircleOptions circleOptions;
+
+    private Handler myHandler;
+    private Circle circle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +60,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         setContentView(R.layout.activity_maps);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
 
+        circleOptions = new CircleOptions();
         mapsPresenter =  new MapsPresenterImpl(this);
         fromLatitude = (EditText) findViewById(R.id.fromLatitude);
         fromLongitude = (EditText) findViewById(R.id.fromLongitude);
@@ -61,6 +72,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+        myHandler = new Handler(Looper.getMainLooper()){
+            @Override
+            public void handleMessage(Message msg) {
+                super.handleMessage(msg);
+                LatLng position = msg.getData().getParcelable("LATLNG");
+                updateLocation(position);
+            }
+
+
+        };
     }
 
 
@@ -87,12 +109,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         toLatitudeVal = this.toLatitude.getText().toString();
         toLongitudeVal = this.toLongitude.getText().toString();
         speedVal = this.speed.getText().toString();
+
         mapsPresenter.validate(fromLatitudeVal, fromLongitudeVal, toLatitudeVal, toLongitudeVal, speedVal);
     }
 
     @Override
     public void correctValidation() {
         // TODO: 2/23/2017 Draw in the map
+        mMap.clear();
         LatLng from = new LatLng(Float.parseFloat(fromLatitudeVal), Float.parseFloat(fromLongitudeVal));
         LatLng to = new LatLng(Float.parseFloat(toLatitudeVal), Float.parseFloat(toLongitudeVal));
         LatLngBounds route = new LatLngBounds(from, to);
@@ -128,6 +152,22 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         polylineOptions.color(Color.GREEN);
         polylineOptions.width(10);
         mMap.addPolyline(polylineOptions);
-        List<LatLng> latLngs = polylineOptions.getPoints();
+        Log.d(TAG, "drawRoute: ");
+        mapsPresenter.updateLocation(polylineOptions.getPoints(), myHandler, speedVal);
     }
+
+    public void updateLocation(LatLng latLng) {
+        if(circle != null){
+            circle.remove();
+        }
+        circleOptions.center(latLng);
+        circleOptions.fillColor(Color.BLUE);
+        circleOptions.radius(10);
+        circleOptions.strokeColor(Color.BLUE);
+        circle = mMap.addCircle(circleOptions);
+    }
+
+
+
+
 }

@@ -1,7 +1,9 @@
 package com.example.admin.mapsexcercise.showroute.presenter;
 
+import android.os.Handler;
 import android.util.Log;
 
+import com.example.admin.mapsexcercise.MyThread;
 import com.example.admin.mapsexcercise.model.directions.Leg;
 import com.example.admin.mapsexcercise.model.directions.Result;
 import com.example.admin.mapsexcercise.model.directions.Route;
@@ -11,7 +13,6 @@ import com.example.admin.mapsexcercise.showroute.view.MapsView;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.maps.android.PolyUtil;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -26,6 +27,7 @@ public class MapsPresenterImpl implements MapsPresenter {
 
     private static final String TAG = "MapsPresenterTAG_";
     private MapsView mapsView;
+    private MyThread myThread;
 
     public MapsPresenterImpl(MapsView mapsView) {
         this.mapsView = mapsView;
@@ -33,6 +35,7 @@ public class MapsPresenterImpl implements MapsPresenter {
 
     @Override
     public void validate(String fromLatitude, String fromLongitude, String toLatitude, String toLongitude, String speed) {
+        if(myThread != null)myThread.stopProcess();
         if(fromLatitude == null || fromLatitude.equals("")){
             mapsView.wrongValidation("From latitude could not be empty");
             return;
@@ -95,5 +98,11 @@ public class MapsPresenterImpl implements MapsPresenter {
                 Log.d(TAG, "onFailure: " + t.toString());
             }
         });
+    }
+
+    @Override
+    public void updateLocation(List<LatLng> latLngs, Handler handler, String speedVal) {
+        myThread = new MyThread(latLngs, handler, speedVal);
+        myThread.start();
     }
 }
