@@ -13,7 +13,6 @@
         android:layout_height="wrap_content"
         android:hint="@string/from_latitude"
         android:enabled="false"
-        android:text="40.71"
         android:inputType="numberSigned|numberDecimal" />
 
     <EditText
@@ -22,7 +21,6 @@
         android:layout_height="wrap_content"
         android:hint="@string/from_longitude"
         android:enabled="false"
-        android:text="-74.008"
         android:inputType="numberSigned|numberDecimal" />
 
     <EditText
@@ -31,7 +29,6 @@
         android:layout_height="wrap_content"
         android:hint="@string/to_latitude"
         android:enabled="false"
-        android:text="40.72"
         android:inputType="numberSigned|numberDecimal" />
 
     <EditText
@@ -40,7 +37,6 @@
         android:layout_height="wrap_content"
         android:hint="@string/to_longitude"
         android:enabled="false"
-        android:text="-74.19"
         android:inputType="numberSigned|numberDecimal" />
 
     <EditText
