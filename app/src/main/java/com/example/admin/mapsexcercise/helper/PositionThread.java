@@ -1,4 +1,4 @@
-package com.example.admin.mapsexcercise;
+package com.example.admin.mapsexcercise.helper;
 
 import android.os.Bundle;
 import android.os.Handler;
@@ -14,7 +14,7 @@ import java.util.List;
  * Created by admin on 11/18/2016.
  */
 
-public class MyThread extends Thread {
+public class PositionThread extends Thread {
 
     private static final String TAG = "MyThreadTAG_";
 
@@ -24,7 +24,7 @@ public class MyThread extends Thread {
     private String speed;
     private volatile boolean exit = false;
 
-    public MyThread(List<LatLng> latLngs, Handler handler, String speedVal) {
+    public PositionThread(List<LatLng> latLngs, Handler handler, String speedVal) {
         this.handler = handler;
         this.latLngs = latLngs;
         this.speed = speedVal;

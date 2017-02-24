@@ -3,7 +3,7 @@ package com.example.admin.mapsexcercise.showroute.presenter;
 import android.os.Handler;
 import android.util.Log;
 
-import com.example.admin.mapsexcercise.MyThread;
+import com.example.admin.mapsexcercise.helper.PositionThread;
 import com.example.admin.mapsexcercise.model.directions.Leg;
 import com.example.admin.mapsexcercise.model.directions.Result;
 import com.example.admin.mapsexcercise.model.directions.Route;
@@ -27,7 +27,7 @@ public class MapsPresenterImpl implements MapsPresenter {
 
     private static final String TAG = "MapsPresenterTAG_";
     private MapsView mapsView;
-    private MyThread myThread;
+    private PositionThread positionThread;
 
     public MapsPresenterImpl(MapsView mapsView) {
         this.mapsView = mapsView;
@@ -35,7 +35,7 @@ public class MapsPresenterImpl implements MapsPresenter {
 
     @Override
     public void validate(String fromLatitude, String fromLongitude, String toLatitude, String toLongitude, String speed) {
-        if(myThread != null)myThread.stopProcess();
+        if(positionThread != null) positionThread.stopProcess();
         if(fromLatitude == null || fromLatitude.equals("")){
             mapsView.wrongValidation("From latitude could not be empty");
             return;
@@ -102,7 +102,7 @@ public class MapsPresenterImpl implements MapsPresenter {
 
     @Override
     public void updateLocation(List<LatLng> latLngs, Handler handler, String speedVal) {
-        myThread = new MyThread(latLngs, handler, speedVal);
-        myThread.start();
+        positionThread = new PositionThread(latLngs, handler, speedVal);
+        positionThread.start();
     }
 }
